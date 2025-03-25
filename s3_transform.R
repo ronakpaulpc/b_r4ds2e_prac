@@ -1317,6 +1317,60 @@ babynames |>
 
 
 # 15.3.2 Count matches ====
+# str_count() tells you how many matches there are in each string.
+x <- c("apple", "banana", "pear")
+str_count(x, "p")
+# Note that each match starts at the end of the previous match, that is 
+# regex matches never overlap. 
+str_count("abababa", "aba")
+str_view("abababa", "aba")
+
+# It’s natural to use str_count() with mutate(). The following example uses 
+# str_count() with character classes to count the number of vowels and 
+# consonants in each name.
+babynames |> 
+    count(name) |> 
+    mutate(
+        vowels = str_count(name, "[aeiou]"),
+        consonants = str_count(name, "[^aeiou]")
+    )
+# If you look closely, you’ll notice that there’s something off with our 
+# calculations: “Aaban” contains three “a”s, but our summary reports only 
+# two vowels. That’s because regular expressions are case sensitive. 
+# There are three ways we could fix this in the book
+
+# In this case, since we’re applying two functions to the name, I think 
+# it’s easier to transform it first:
+babynames |> 
+    count(name) |> 
+    mutate(
+        name = str_to_lower(name),
+        vowels = str_count(name, "[aeiou]"),
+        consonants = str_count(name, "[^aeiou]")
+    )
+
+
+# 15.3.3 Replace values ====
+# We can also modify strings with str_replace() and str_replace_all(). 
+# str_replace() replaces the first match.
+x <- c("apple", "pear", "banana")
+str_replace(x, "[aeiou]", "-")
+# str_replace_all() replaces all matches.
+str_replace_all(x, "[aeiou]", "-")
+
+# str_remove() and str_remove_all() are handy shortcuts for 
+# str_replace(x, pattern, ""):
+x <- c("apple", "pear", "banana")
+str_remove(x, "[aeiou]")
+str_remove_all(x, "[aeiou]")
+# These functions are naturally paired with mutate() when doing data
+# cleaning and you will often apply them repeatedly to peel off layers of 
+# inconsistent formatting.
+
+
+# 15.3.4 Extract variables ====
+
+
 
 
 
@@ -1595,7 +1649,6 @@ ordered(c("a", "b", "c"))
 
 # 16.7 Summary ------------------------------------------------------------
 # NO CODE.
-
 
 
 
