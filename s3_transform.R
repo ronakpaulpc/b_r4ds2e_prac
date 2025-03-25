@@ -1225,9 +1225,10 @@ library(babynames)
 
 # In here, we will use a mix of very simple inline examples so we can get the
 # - basic idea, the babynames data, and 3 character vectors from stringr:
-# > fruit: contains the names of 80 fruits.
-# > words: contains 980 common English words.
-# > sentences: contains 720 short sentences.
+# 1. fruit: contains the names of 80 fruits.
+# 2. words: contains 980 common English words.
+# 3. sentences: contains 720 short sentences.
+glimpse(babynames)
 glimpse(fruit)
 glimpse(words)
 glimpse(sentences)
@@ -1235,23 +1236,28 @@ glimpse(sentences)
 
 # 15.2 Pattern basics -----------------------------------------------------
 # Here, we see how regex patterns work.
-# The simplest patterns has letters and numbers that match those chars exactly.
+# The simplest patterns has letters and numbers that match those characters 
+# exactly.
 str_view(fruit, pattern = "berry")
-# Letters and numbers match exactly and are called literal characters.
-# Most punctuation characters, like ., +, *, [, ], and ? have special meanings
-# - and are called metacharacters. 
+# Letters and numbers match exactly and are called literal characters. Most 
+# punctuation characters, like ., +, *, [, ], and ? have special meanings
+# and are called metacharacters. 
 
 # CASE: "." will match any character, so "a." will match any string that
 # - contains an “a” followed by another character.
-str_view(c("a", "ab", "ae", "bd", "ea", "eab"), pattern = "a.")
+str_view(
+    c("a", "ab", "ae", "bd", "ea", "eab"), 
+    pattern = "a."
+)
 
-# CASE: Find fruits that contain “a”, followed by 3 letters, then an “e”.
+# CASE: We could find fruits that contain “a”, followed by 3 letters, 
+# then an “e”.
 str_view(fruit, pattern = "a...e")
 
 # Quantifiers control how many times a pattern can match:
-# > ? makes a pattern optional (i.e. it matches 0 or 1 times)
-# > + lets a pattern repeat (i.e. it matches at least once)
-# > * lets a pattern be optional or repeat (i.e. it matches any num of times)
+# 1. ? makes a pattern optional (i.e. it matches 0 or 1 times)
+# 2. + lets a pattern repeat (i.e. it matches at least once)
+# 3. * lets a pattern be optional or repeat (i.e. it matches any num of times)
 # CASE: ab? matches an "a", optionally followed by a "b".
 str_view(c("a", "ab", "abb"), "ab?")
 # CASE: ab+ matches an "a", followed by at least one "b".
@@ -1260,32 +1266,61 @@ str_view(c("a", "ab", "abb"), "ab+")
 str_view(c("a", "ab", "abb"), "ab*")
 
 # Character classes are defined by [] and let you match a set of characters.
-# Like, [abcd] matches “a”, “b”, “c”, or “d”. You can also invert the match by
-# - starting with ^: [^abcd] matches anything except “a”, “b”, “c”, or “d”.
+# Like, [abcd] matches “a”, “b”, “c”, or “d”. You can also invert the match 
+# by starting with ^: [^abcd] matches anything except “a”, “b”, “c”, or “d”.
 # CASE: Find the words containing an “x” surrounded by vowels.
 str_view(words, "[aeiou]x[aeiou]")
 # CASE: Find the words containing an “y” surrounded by consonants.
 str_view(words, "[^aeiou]y[^aeiou]")
 
-# Alternation, |, can be used to pick btwn one or more alternative patterns.
+# You can use alternation, |, to pick between one or more alternative 
+# patterns.
 # CASE: Fruits containing “apple”, “melon”, or “nut”.
 str_view(fruit, "apple|melon|nut")
 # CASE: Fruits containing a repeated vowel.
 str_view(fruit, "aa|ee|ii|oo|uu")
 # Regular expressions are very compact and use a lot of punctuation characters,
-# - so they can seem overwhelming and hard to read at first. Don’t worry
-# - you’ll get better with practice, and simple patterns will soon become
-# - second nature.
+# so they can seem overwhelming and hard to read at first. Don’t worry
+# you’ll get better with practice, and simple patterns will soon become
+# second nature.
 
 
 # 15.3 Key functions ------------------------------------------------------
 # Now that you’ve got the basics of regular expressions under your belt, let’s
-# - use them with some stringr and tidyr functions. In the following section,
-# - you’ll learn how to detect the presence or absence of a match, how to count
-# - the number of matches, how to replace a match with fixed text, and how to
-# - extract text using a pattern.
+# use them with some stringr and tidyr functions.
 
 # 15.3.1 Detect matches ====
+# str_detect() returns a logical vector that is TRUE if the pattern matches 
+# an element of the character vector and FALSE otherwise
+str_detect(c("a", "b", "c"), "[aeiou]")
+
+# Since str_detect() returns a logical vector of the same length as the 
+# initial vector, it pairs well with filter(). 
+# For example, this code finds all the most popular names containing a 
+# lower-case “x”:
+babynames |> 
+    filter(str_detect(name, "x")) |> 
+    count(name, wt = n, sort = T)
+
+# CASE: Compute and visualize the proportion of baby names that contain “x”
+# broken down by year.
+babynames |> 
+    group_by(year) |> 
+    summarize(prop_x = mean(str_detect(name, "x"))) |> 
+    ggplot(aes(x = year, y = prop_x)) +
+    geom_line()
+# There are two functions that are closely related to str_detect(): 
+# str_subset() and str_which(). 
+# str_subset() returns a character vector containing only the strings that 
+# match. str_which() returns an integer vector giving the positions of the 
+# strings that match.
+
+
+# 15.3.2 Count matches ====
+
+
+
+
 # TBC ####
 
 
