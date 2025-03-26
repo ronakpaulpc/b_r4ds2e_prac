@@ -50,8 +50,7 @@ getwd()
 # )
 
 # Loading the required packages
-library(easypackages)
-libraries(
+easypackages::libraries(
     "tidyverse",                      # Universe of data mgmt pkgs
     "arrow",
     "babynames",
@@ -1289,6 +1288,7 @@ str_view(fruit, "aa|ee|ii|oo|uu")
 # Now that you’ve got the basics of regular expressions under your belt, let’s
 # use them with some stringr and tidyr functions.
 
+
 # 15.3.1 Detect matches ====
 # str_detect() returns a logical vector that is TRUE if the pattern matches 
 # an element of the character vector and FALSE otherwise
@@ -1369,7 +1369,56 @@ str_remove_all(x, "[aeiou]")
 
 
 # 15.3.4 Extract variables ====
+# Next we use regular expressions to extract data out of one column into 
+# one or more new columns: separate_wider_regex(). It’s a peer of the 
+# separate_wider_position() and separate_wider_delim() functions that you 
+# learned.
 
+# Let’s create a simple dataset to show how it works. Here we have some data 
+# derived from babynames where we have the name, gender, and age of a bunch 
+# of people in a rather weird format.
+df <- tribble(
+    ~str,
+    "<Sheryl>-F_34",
+    "<Kisha>-F_45", 
+    "<Brandon>-N_33",
+    "<Sharon>-F_38", 
+    "<Penny>-F_58",
+    "<Justin>-M_41", 
+    "<Patricia>-F_84", 
+)
+df
+# To extract this data we just need to construct a sequence of regular 
+# expressions that match each piece. If we want the contents of that piece 
+# to appear in the output, we give it a name.
+df |> 
+    separate_wider_regex(
+        str,
+        patterns = c(
+            "<",
+            name = "[A-Za-z]+",
+            ">-",
+            gender = ".",
+            "_",
+            age = "[0-9]+"
+        )
+    )
+
+
+# 15.4 Pattern details ----------------------------------------------------
+# Now that you understand the basics of the pattern language and how to use 
+# it with some stringr and tidyr functions, it’s time to dig into more of 
+# the details.
+
+
+# 15.4.1 Escaping ====
+# To create the regular expression \., we need to use \\.
+dot <- "\\."
+dot
+# But the expression itself only contains one \
+str_view(dot)
+# And this tells R to look for an explicit .
+str_view(c("abc", "a.c", "bef"), "a\\.c")
 
 
 
