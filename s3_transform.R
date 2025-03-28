@@ -1417,10 +1417,31 @@ dot <- "\\."
 dot
 # But the expression itself only contains one \
 str_view(dot)
-# And this tells R to look for an explicit .
+# And this tells R to look for an explicit "."
 str_view(c("abc", "a.c", "bef"), "a\\.c")
 
+# If \ is used as an escape character in regular expressions, how do you 
+# match a literal \? 
+# Well, you need to escape it, creating the regular expression \\. To create 
+# that regular expression, you need to use a string, which also needs to 
+# escape \. That means to match a literal \ you need to write "\\\\" — you 
+# need four backslashes to match one.
+x <- "a\\b"
+x
+str_view(x)
+str_view(x, "\\\\")
+# Altly, you might find it easier to use the raw strings, that lets you 
+# avoid one layer of escaping.
+str_view(x, r"{\\}")
 
+# If you’re trying to match a literal ., $, |, *, +, ?, {, }, (, ), there’s 
+# an alternative to using a backslash escape: you can use a character 
+# class: [.], [$], [|], … all match the literal values.
+str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
+str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
+
+
+# 15.4.2 Anchors ====
 
 
 
