@@ -1442,6 +1442,36 @@ str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
 
 
 # 15.4.2 Anchors ====
+# By default, regular expressions will match any part of a string. If you 
+# want to match at the start or end you need to anchor the regular expression 
+# using ^ to match the start or $ to match the end.
+# Fruit names that start with "a".
+str_view(fruit, "^a")
+# Fruit names that end with "a".
+str_view(fruit, "a$")
+
+# To force a regular expression to match only the full string, anchor it 
+# with both ^ and $.
+str_view(fruit, "apple")
+str_view(fruit, "^apple$")
+
+# You can also match the boundary between words (i.e. the start or end of 
+# a word) with \b. This can be particularly useful when using RStudio’s 
+# find and replace tool. 
+# For example, if to find all uses of sum(), you can search for \bsum\b to 
+# avoid matching summarize, summary, rowsum and so on.
+x <- c("summary(x)", "summarize(df)", "rowsum(x)", "sum(x)")
+x
+str_view(x, "sum")
+str_view(x, "\\bsum\\b")
+
+# When used alone, anchors will produce a zero-width match
+str_view("abc", c("$", "^", "\\b"))
+# This helps you understand what happens when you replace a standalone anchor.
+str_replace_all("abc", c("$", "^", "\b"), "--")
+
+
+# 15.4.3 Character classes ====
 
 
 
