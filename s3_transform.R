@@ -1472,7 +1472,41 @@ str_replace_all("abc", c("$", "^", "\b"), "--")
 
 
 # 15.4.3 Character classes ====
+# A character class, or character set, allows you to match any character in 
+# a set. You can construct your own sets with [], where [abc] matches “a”, 
+# “b”, or “c” and [^abc] matches any character except “a”, “b”, or “c”.
+# - defines a range, e.g., [a-z] matches any lower case letter and 
+# [0-9] matches any number.
+# \ escapes special characters, so [\^\-\]] matches ^, -, or ].
+x <- "abcd ABCD 12345 -!@#%."
+x
+str_view(x, "[abc]+")
+str_view(x, "[a-z]+")
+str_view(x, "[^a-z0-9]+")
 
+# You need an escape to match characters that are otherwise special 
+# inside of [].
+str_view("a-b-c", "[a-c]")
+str_view("a-b-c", "[a\\-c]")
+
+# Some character classes are used so commonly that they get their own 
+# shortcut. You’ve already seen ., which matches any character apart from a 
+# newline. 
+# There are three other particularly useful pairs:
+# 1. \d matches any digit;
+# 2. \D matches anything that isn’t a digit.
+# 3. \s matches any whitespace (e.g., space, tab, newline);
+# 4. \S matches anything that isn’t whitespace.
+# 5. \w matches any “word” character, i.e. letters and numbers;
+# 6. \W matches any “non-word” character.
+x <- "abcd ABCD 12345 -!@#%."
+x
+str_view(x, "\\d+")
+str_view(x, "\\D+")
+str_view(x, "\\s+")
+str_view(x, "\\S+")
+str_view(x, "\\w+")
+str_view(x, "\\W+")
 
 
 # TBC ####
