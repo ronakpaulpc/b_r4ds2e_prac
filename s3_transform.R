@@ -1509,6 +1509,78 @@ str_view(x, "\\w+")
 str_view(x, "\\W+")
 
 
+# 15.4.4 Quantifiers ====
+# Quantifiers control how many times a pattern matches.
+# NO CODE.
+
+
+# 15.4.5 Operator precedence and parentheses ====
+# Regular expressions have their own precedence rules: quantifiers have high 
+# precedence and alternation has low precedence which means that ab+ is 
+# equivalent to a(b+), and ^a|b$ is equivalent to (^a)|(b$). 
+# Just like with algebra, you can use parentheses to override the usual order. 
+# But unlike algebra you’re unlikely to remember the precedence rules for 
+# regexes, so feel free to use parentheses liberally.
+# NO CODE.
+
+
+# 15.4.6 Grouping and capturing ====
+# As well as overriding operator precedence, parentheses have another 
+# important effect: they create capturing groups that allow you to use 
+# sub-components of the match.
+
+# The first way to use a capturing group is to refer back to it within a match 
+# with back reference. For example, the following pattern finds all fruits 
+# that have a repeated pair of letters.
+str_view(fruit, "(..)\\1")
+# This one finds all words that start and end with the same pair of letters.
+str_view(words, "^(..).*\\1$")
+
+# You can also use back references in str_replace(). 
+# For example, this code switches the order of the second and third words 
+# in sentences.
+sentences |> head()
+sentences |> 
+    str_replace("(\\w+) (\\w+) (\\w+)", "\\1 \\3 \\2") |> 
+    str_view()
+
+# If you want to extract the matches for each group you can use str_match(). 
+# But str_match() returns a matrix, so it’s not particularly easy to use.
+sentences |> 
+    str_match("the (\\w+) (\\w+)") |> 
+    head()
+# You could convert to a tibble and name the columns.
+sentences |> 
+    str_match("the (\\w+) (\\w+)") |> 
+    as_tibble(.name_repair = "minimal") |> 
+    set_names("match", "word1", "word2")
+# NOTE: You’ve basically recreated your own version of separate_wider_regex().
+
+# Occasionally, you will want to use parentheses without creating matching 
+# groups. You can create a non-capturing group with (?:)
+x <- c("a gray cat", "a grey dog")
+x
+str_match(x, "gr(e|a)y")
+str_match(x, "gr(?:e|a)y")
+
+
+# 15.5 Pattern control ----------------------------------------------------
+# It’s possible to exercise extra control over the details of the match by 
+# using a pattern object instead of just a string. This allows you to control 
+# the so called regex flags and match various types of fixed strings, as 
+# described below.
+
+# 15.5.1 Regex flags ====
+# There are a number of settings that can be used to control the details of 
+# the regexp. These settings are often called flags in other programming 
+# languages. In stringr, you can use these by wrapping the pattern in a call 
+# to regex().
+bananas <- c("banana", "Banana", "BANANA")
+bananas
+str_view(bananas, "banana")
+str_view(bananas, regex("banana", ignore_case = T))
+
+
 # TBC ####
 
 
