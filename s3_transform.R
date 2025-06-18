@@ -1864,10 +1864,11 @@ ordered(c("a", "b", "c"))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Here we learn how to work with dates and times in R.
 # Dates and times are hard as they have to reconcile two physical phenomena,
-# - the rotation of the Earth and its orbit around the Sun, 
-# - with multiple geopolitical phenomena like months, time zones, and DST. 
+# the rotation of the Earth and its orbit around the Sun, with multiple 
+# geopolitical phenomena like months, time zones, and DST. 
 # This chapter won’t teach you every last detail about dates and times,
-# - but it will teach practical skills for handling common data analysis challenges.
+# but it will give you a solid grounding of practical skills for handling 
+# common data analysis challenges.
 
 
 # 17.1 Prerequisites ------------------------------------------------------
@@ -1881,14 +1882,23 @@ library(nycflights13)
 # - date: Tibbles print this as <date>.
 # - time: It is time within a day. Tibbles print this as <time>.
 # - date-time: It is a date plus a time that uniquely identifies an instant
-# -- in time (typically to the nearest second). Tibbles print this as <dttm>.
-# -- Base R calls these POSIXct, but that doesn’t exactly trip off the tongue.
+#   in time (typically to the nearest second). Tibbles print this as <dttm>.
+#   Base R calls these POSIXct, but that doesn’t exactly trip off the tongue.
+
+# In this chapter we are going to focus on dates and date-times as R doesn’t 
+# have a native class for storing times. If you need one, you can use the 
+# hms package.
 
 # Getting the current date.
 today()
 # Getting the current date-time.
 now()
-# Next we learn the four likely ways to create a date/time.
+# Next we learn the four likely ways to create a date/time:
+# - While reading a file with readr
+# - From a string
+# - From individual date-time components
+# - From an existing date/time object
+
 
 # 17.2.1 During import ====
 # If your CSV contains an ISO8601 date or date-time, 
@@ -1898,8 +1908,11 @@ date,datetime
 2022-01-02,2022-01-02 05:12
 "
 read_csv(csv)
+# If you haven’t heard of ISO8601 before, it’s an international standard for 
+# writing dates where the components of a date are organized from biggest to 
+# smallest separated by "-".
 
-# Checking the options to import a very ambiguous date.
+# Checking the options applied to a very ambiguous date.
 # The data
 csv <- "
 date
@@ -1921,10 +1934,20 @@ read_csv(
     col_types = cols(date = col_date("%y/%m/%d"))
 )
 
+# NOTE: No matter how you specify the date format, it’s always displayed 
+# the same way once you get it into R.
+
+# If you’re using %b or %B and working with non-English dates, you’ll 
+# also need to provide a locale(). See the list of built-in languages in 
+# date_names_langs(), or create your own with date_names().
 # Check the list of built-in languages.
 date_names_langs()
 
+
 # 17.2.2 From strings ====
+
+#### START FROM HERE ####
+
 # Altly, we use lubridate’s helpers which attempt to automatically determine 
 # - the format once you specify the order of the component. 
 # To use them, identify the order in which year, month, and day appear in your
