@@ -2107,7 +2107,67 @@ flights_dt |>
 
 
 # 17.4 Time spans ---------------------------------------------------------
+# Here we learn how arithmetic with dates works, including subtraction, 
+# addition, and division. We will also learn about three important classes 
+# that represent time spans:
+# - Durations, which represent an exact number of seconds.
+# - Periods, which represent human units like weeks and months.
+# - Intervals, which represent a starting and ending point.
 
+
+# 17.4.1 Durations ====
+# In R, when you subtract two dates, you get a difftime object
+today <- today()
+# Let's find how old is Hadley
+h_age <- today - ymd("1979-10-14")
+h_age
+class(h_age)
+
+# A difftime class object records a time span of seconds, minutes, hours, 
+# days, or weeks. This ambiguity can make difftimes a little painful to 
+# work with, so lubridate provides an alternative which always uses 
+# seconds: the duration.
+as.duration(h_age)
+
+# Durations come with a bunch of convenient constructors.
+dseconds(15)
+dminutes(10)
+dhours(12)
+dhours(c(12, 24))
+ddays(0:5)
+dweeks(3)
+dyears(1)
+
+# Durations always record the time span in seconds. Larger units are created 
+# by converting minutes, hours, days, weeks, and years to seconds: 60 seconds 
+# in a minute, 60 minutes in an hour, 24 hours in a day, and 7 days in a 
+# week. Larger time units are more problematic. 
+# A year uses the “average” number of days in a year, i.e. 365.25. 
+# There’s no way to convert a month to a duration, because there’s just 
+# too much variation.
+
+# We can add and multiply durations
+2 * dyears(1)
+dyears(1) + dweeks(12) + dhours(15)
+
+# We can add and subtract duration to and from days.
+tomorrow <- today() + ddays(1)
+tomorrow
+last_year <- today() - dyears(1)
+last_year
+
+# However, because durations represent an exact number of seconds, sometimes 
+# we might get an unexpected result.
+one_am <- ymd_hms("2026-03-08 01:00:00", tz = "America/New_York")
+one_am              # "2026-03-08 01:00:00 EST"
+one_am + ddays(1)   # "2026-03-09 02:00:00 EDT"
+# Why is one day after 1am March 8, 2am March 9? If you look carefully at the 
+# date you might also notice that the time zones have changed. March 8 only 
+# has 23 hours because it’s when DST starts, so if we add a full days worth 
+# of seconds we end up with a different time.
+
+
+# 17.4.2 Periods ====
 
 
 
