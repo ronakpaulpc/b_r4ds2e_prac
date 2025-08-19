@@ -2118,6 +2118,7 @@ flights_dt |>
 # 17.4.1 Durations ====
 # In R, when you subtract two dates, you get a difftime object
 today <- today()
+today
 # Let's find how old is Hadley
 h_age <- today - ymd("1979-10-14")
 h_age
@@ -2168,6 +2169,55 @@ one_am + ddays(1)   # "2026-03-09 02:00:00 EDT"
 
 
 # 17.4.2 Periods ====
+# To solve this problem, lubridate provides periods. 
+# Periods are time spans but don’t have a fixed length in seconds, instead 
+# they work with “human” times, like days and months. That allows them to 
+# work in a more intuitive way.
+one_am              # "2026-03-08 01:00:00 EST"
+one_am + days(1)    # "2026-03-09 01:00:00 EDT"
+
+# Like durations, periods can be created with a number of friendly constructor 
+# functions.
+hours(c(12, 24))
+days(7)
+months(1:6, abbreviate = T)
+years(1)
+
+# You can add and multiply periods.
+10 * (months(6, abbreviate = T) + days(1))
+days(50) + hours(25) + minutes(2)
+# And of course, add them to dates. Compared to durations, periods are more 
+# likely to do what you expect.
+# Adding to a leap year
+ymd("2024-01-01") + dyears(1)       # "2024-12-31 06:00:00 UTC"
+ymd("2024-01-01") + years(1)        # "2025-01-01"
+# Adding to a Daylight saving time
+one_am                              # "2026-03-08 01:00:00 EST"
+one_am + ddays(1)                   # "2026-03-09 02:00:00 EDT"
+one_am + days(1)                    # "2026-03-09 01:00:00 EDT"
+
+# Let’s use periods to fix an oddity related to our flight dates. 
+# Some planes appear to have arrived at their destination before they 
+# departed from New York City.
+flights_dt |> 
+    filter(arr_time < dep_time) |> 
+    select(origin, dest, arr_time, dep_time, air_time)
+# These are overnight flights. We used the same date information for both 
+# the departure and the arrival times, but these flights arrived on the 
+# following day. 
+# We can fix this by adding days(1) to the arrival time of each 
+# overnight flight.
+flights_dt <- flights_dt |> 
+    mutate(
+        overnight = arr_time < dep_time,
+        arr_time = arr_time + days(overnight),
+        sched_arr_time = sched_arr_time + days(overnight)
+    )
+flights_dt |> tabyl(overnight)
+# Now all of our flights obey the laws of physics.
+flights_dt |> 
+    filter(arr_time < dep_time)
+
 
 
 
