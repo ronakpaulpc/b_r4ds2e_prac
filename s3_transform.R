@@ -2219,6 +2219,31 @@ flights_dt |>
     filter(arr_time < dep_time)
 
 
+# 17.4.3 Intervals ====
+# What does dyears(1) / ddays(365) return? 
+# It’s not quite one, because dyears() is defined as the number of seconds 
+# per average year, which is 365.25 days.
+dyears(1) / ddays(365)      # 1.000685
+# What does years(1) / days(1) return? 
+# Well, if the year was 2015 it should return 365, but if it was 2016
+# it should return 366. What it does instead is give an estimate
+years(1) / days(1)          # 365.25
+
+# If you want a more accurate measurement, you’ll have to use an interval. 
+# An interval is a pair of starting and ending date times, or you can 
+# think of it as a duration with a starting point.
+# You can create an interval by writing start %--% end.
+y2023 <- ymd("2023-01-01") %--% ymd("2024-01-01")
+y2024 <- ymd("2024-01-01") %--% ymd("2025-01-01")
+y2023
+y2024
+# You then divide it by days() to find out how many days are in the year.
+y2023 / days(1)     # 365
+y2024 / days(1)     # 366
+
+
+# 17.5 Time zones ---------------------------------------------------------
+Sys.timezone()      # "Asia/Calcutta"
 
 
 # TBC ####
