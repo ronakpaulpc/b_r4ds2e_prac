@@ -2243,10 +2243,56 @@ y2024 / days(1)     # 366
 
 
 # 17.5 Time zones ---------------------------------------------------------
-Sys.timezone()      # "Asia/Calcutta"
+# Time zones are an enormously complicated topic because of their 
+# interaction with geopolitical entities. Fortunately we don’t need to 
+# dig into all the details as they’re not all important for data analysis.
+
+# You can find out what R thinks your current time zone is.
+Sys.timezone()              # "Asia/Calcutta"
+# And see the complete list of all time zone names.
+length(OlsonNames())        # 596
+head(OlsonNames())
+
+# In R, the time zone is an attribute of the date-time that only controls 
+# printing. 
+# For example, these three objects represent the same instant in time.
+x1 <- ymd_hms("2024-06-01 12:00:00", tz = "America/New_York")
+x1
+x2 <- ymd_hms("2024-06-01 18:00:00", tz = "Europe/Copenhagen")
+x2
+x3 <- ymd_hms("2024-06-02 04:00:00", tz = "Pacific/Auckland")
+x3
+# You can verify that they’re the same time using subtraction.
+x1 - x2                     # Time difference of 0 secs
+x1 - x3                     # Time difference of 0 secs
+x2 - x3                     # Time difference of 0 secs
+
+# Unless otherwise specified, lubridate always uses UTC. 
+# UTC (Coordinated Universal Time) is the standard time zone used by the 
+# scientific community and is roughly equivalent to GMT (Greenwich Mean Time). 
+# It does not have DST, which makes a convenient representation for 
+# computation. Operations that combine date-times, like c(), will often drop 
+# the time zone. In that case, the date-times will display in the time zone 
+# of the first element.
+x4 <- c(x1, x2, x3)
+x4
+
+# You can change the time zone in two ways.
+# 1. Keep the instant in time the same, and change how it’s displayed. 
+# Use this when the instant is correct, but you want a more natural display.
+x4a <- with_tz(x4, tzone = "Australia/Lord_Howe")
+x4a
+x4a - x4
+# 2. Change the underlying instant in time. 
+# Use this when you have an instant that has been labelled with the 
+# incorrect time zone, and you need to fix it.
+x4b <- force_tz(x4, tzone = "Australia/Lord_Howe")
+x4b
+x4b - x4
 
 
-# TBC ####
+# 17.6 Summary ------------------------------------------------------------
+# NO CODE.
 
 
 
