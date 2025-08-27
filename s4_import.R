@@ -6,7 +6,7 @@
 # - spreadsheets, databases, arrow format, hierarchical data and web scraping.
 
 # There are two important tidyverse packages that we won’t discuss here:
-# > haven, for working with data from SPSS, Stata, and SAS files, and
+# > haven, for working with data from SPSS, STATA, and SAS files, and
 # > xml2, for working with XML data.
 
 # So let's roll!
@@ -55,8 +55,7 @@ getwd()
 # )
 
 # Loading the required packages
-library(easypackages)
-libraries(
+easypackages::libraries(
     "tidyverse",                      # Universe of data mgmt pkgs
     "arrow",
     "babynames",
@@ -81,6 +80,7 @@ libraries(
 )
 # p_loaded()                          # checking the loaded packages
 # unloadNamespace("writexl")          # Unloading a pkg
+
 
 
 #_====

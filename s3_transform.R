@@ -1847,7 +1847,8 @@ gss_cat |>
 # - equal distance between levels: the first level is “less than” the 
 # - second level by the same amount that the second level is “less than” the
 # - third level, and so on.
-# We can recognize them when printing as they use < sign bwn the factor levels.
+# We can recognize them when printing as they use the "<" sign between the 
+# factor levels.
 ordered(c("a", "b", "c"))
 # SEE BOOK FOR MORE DETAILS.
 # see vignette("contrasts", package = "faux") by Lisa DeBruine.
@@ -1945,9 +1946,6 @@ date_names_langs()
 
 
 # 17.2.2 From strings ====
-
-#### START FROM HERE ####
-
 # Altly, we use lubridate’s helpers which attempt to automatically determine 
 # - the format once you specify the order of the component. 
 # To use them, identify the order in which year, month, and day appear in your
@@ -2869,6 +2867,7 @@ employees |>
 
 # 19.6 Summary ------------------------------------------------------------
 # NO CODE.
+
 
 
 
