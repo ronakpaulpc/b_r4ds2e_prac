@@ -106,6 +106,23 @@ library(writexl)        # create excel spreadsheets
 # Microsoft Excel is a widely used spreadsheet software program where
 # - data are organized in worksheets inside of spreadsheet files.
 
+
+# 20.2.2 Getting started ====
+# Most of readxl’s functions allow you to load Excel spreadsheets into R:
+# read_xls() reads Excel files with xls format.
+# read_xlsx() read Excel files with xlsx format.
+# read_excel() can read files with both xls and xlsx format. It guesses the 
+# file type based on the input.
+
+# NOTE: For the rest of the chapter we will focus on using read_excel().
+
+
+# 20.2.3 Reading excel spreadsheets ====
+
+
+
+
+
 # TBC ####
 
 
