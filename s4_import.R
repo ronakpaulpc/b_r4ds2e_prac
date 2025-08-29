@@ -63,23 +63,24 @@ easypackages::libraries(
     "duckdb",
     "gapminder",
     "ggrepel",
-    "ggridges",                       # Ridgeline plots based on ggplot2
-    "ggthemes",                       # Useful themes based on ggplot2
+    "ggridges",                     # Ridgeline plots based on ggplot2
+    "ggthemes",                     # Useful themes based on ggplot2
     "hexbin",
-    "janitor",                        # Cmds for data cleaning
+    "janitor",                      # Cmds for data cleaning
     "Lahman",
     "leaflet",
     "maps",
     "nycflights13",
-    "openxlsx",                       # For imp/exp and handling excel sheets
+    "openxlsx",                     # For imp/exp and handling excel sheets
     "palmerpenguins",
     "pacman",
+    "readxl",                       # For reading in excel files
     "repurrrsive",
     "tidymodels",
-    "writexl"
+    "writexl"                       # For writing out excel files
 )
-# p_loaded()                          # checking the loaded packages
-# unloadNamespace("writexl")          # Unloading a pkg
+# p_loaded()                        # checking the loaded packages
+# unloadNamespace("writexl")        # Unloading a pkg
 
 
 
@@ -103,8 +104,11 @@ library(writexl)        # create excel spreadsheets
 
 
 # 20.2 Excel --------------------------------------------------------------
-# Microsoft Excel is a widely used spreadsheet software program where
-# - data are organized in worksheets inside of spreadsheet files.
+# Microsoft Excel is a widely used spreadsheet software program where data
+# are organized in worksheets inside of spreadsheet files. Here, we learn 
+# how to load data from Excel spreadsheets in R with the readxl package. 
+# This package is non-core tidyverse, so you need to load it explicitly.
+# We also use the writexl package to create Excel spreadsheets.
 
 
 # 20.2.2 Getting started ====
@@ -113,11 +117,47 @@ library(writexl)        # create excel spreadsheets
 # read_xlsx() read Excel files with xlsx format.
 # read_excel() can read files with both xls and xlsx format. It guesses the 
 # file type based on the input.
-
 # NOTE: For the rest of the chapter we will focus on using read_excel().
 
 
 # 20.2.3 Reading excel spreadsheets ====
+# Here read_excel() will read the file in as a tibble. The first argument 
+# to read_excel() is the path to the file to read.
+students <- read_excel("data/students.xlsx")
+students
+# We have six students in the data and five variables on each student. 
+# However there are a few problems that we need to address in this dataset.
+
+# Problem 1: The column names are all over the place.
+# We can modify var names to snake_case using the col_names argument.
+read_excel(
+    "data/students.xlsx",
+    col_names = c("student_id", "full_name", "favourite_food", 
+                  "meal_plan", "age")
+)
+# Unfortunately, this didn’t quite do the trick. We now have the var names 
+# we want, but what was previously the header row now shows up as the 
+# first observation in the data. 
+# You can explicitly skip that row using the skip argument.
+read_excel(
+    "data/students.xlsx",
+    col_names = c("student_id", "full_name", "favourite_food",
+                  "meal_plan", "age"),
+    skip = 1
+)
+
+# Problem 2: In the favourite_food column, one of the observations 
+# is N/A, which stands for “not available” but it’s currently not 
+# recognized as an NA.
+read_excel(
+    "data/students.xlsx",
+    col_names = c("student_id", "full_name", "favourite_food", 
+                  "meal_plan", "age"),
+    skip = 1,
+    na = c("", "N/A")
+)
+
+# Problem 3: 
 
 
 
