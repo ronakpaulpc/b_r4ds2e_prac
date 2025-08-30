@@ -157,8 +157,49 @@ read_excel(
     na = c("", "N/A")
 )
 
-# Problem 3: 
+# Problem 3: Another issue is that age is read in as a character var but 
+# it really should be numeric.
+# We can supply a col_types argument to read_excel() and specify the 
+# col types for the variables.
+read_excel(
+    "data/students.xlsx",
+    col_names = c("student_id", "full_name", "favourite_food",
+                  "meal_plan", "age"),
+    skip = 1,
+    na = c("", "N/A"),
+    col_types = c("numeric", "text", "text", "text", "numeric")
+)
+# However, this didn’t quite produce the desired result either. 
+# By specifying that age should be numeric, we have turned the one cell 
+# with the non-numeric entry (which had the value five) into an NA. 
+# In this case, we should read age in as "text" and then make the change 
+# once the data is loaded in R.
+students <- read_excel(
+    "data/students.xlsx",
+    col_names = c("student_id", "full_name", "favourite_food",
+                  "meal_plan", "age"),
+    skip = 1,
+    na = c("", "N/A"),
+    col_types = c("numeric", "text", "text", "text", "text")
+)
+students <- students |> 
+    mutate(
+        age = if_else(age == "five", "5", age),
+        age = parse_number(age)
+    )
+students
+# It took us multiple steps and trial-and-error to load the data in 
+# exactly the format we want, and this is not unexpected. Data science 
+# is an iterative process, and the process of iteration can be even more 
+# tedious when reading data in from spreadsheets compared to other 
+# plain text, rectangular data files because humans tend to input data 
+# into spreadsheets and use them not just for data storage but also for 
+# sharing and communication.
 
+
+# 20.2.4 Reading worksheets ====
+# An important feature that distinguishes spreadsheets from flat files 
+# is the notion of multiple sheets, called worksheets.
 
 
 
