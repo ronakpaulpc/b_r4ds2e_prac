@@ -200,6 +200,61 @@ students
 # 20.2.4 Reading worksheets ====
 # An important feature that distinguishes spreadsheets from flat files 
 # is the notion of multiple sheets, called worksheets.
+# You can read a single worksheet from a spreadsheet with the sheet argument 
+# in read_excel(). 
+penguins_torgersen <- read_excel(
+    "data/penguins.xlsx",
+    sheet = "Torgersen Island"
+)
+# check
+penguins_torgersen |> print(n = 100)
+
+# Some variables that appear to contain numerical data are read in as 
+# characters due to the character string "NA" not being recognized 
+# as a true NA.
+penguins_torgersen <- read_excel(
+    "data/penguins.xlsx",
+    sheet = "Torgersen Island",
+    na = "NA"
+)
+# check
+penguins_torgersen |> print(n = 100)
+
+# Altly, you can use excel_sheets() to get information on all worksheets 
+# in an Excel spreadsheet, and then read the one(s) you’re interested in.
+excel_sheets("data/penguins.xlsx")
+# Once you know the names of the worksheets, you can read them in.
+# Read sheet for Biscoe Island
+penguins_biscoe <- read_excel(
+    "data/penguins.xlsx",
+    sheet = "Biscoe Island",
+    na = "NA"
+)
+penguins_biscoe |> head()
+# Read sheet for Dream Island
+penguins_dream <- read_excel(
+    "data/penguins.xlsx",
+    sheet = "Dream Island",
+    na = "NA"
+)
+penguins_dream |> head()
+
+# In this case the full penguins dataset is spread across 3 worksheets 
+# in the spreadsheet. Each worksheet has the same number of columns but 
+# different numbers of rows.
+dim(penguins_torgersen)
+dim(penguins_biscoe)
+dim(penguins_dream)
+# We can put them together with bind_rows().
+penguins <- bind_rows(penguins_torgersen, penguins_biscoe, penguins_dream)
+penguins
+
+
+# 20.2.5 Reading part of a sheet ====
+
+
+
+
 
 
 
