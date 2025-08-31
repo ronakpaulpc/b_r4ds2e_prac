@@ -251,8 +251,50 @@ penguins
 
 
 # 20.2.5 Reading part of a sheet ====
+# Since many use Excel spreadsheets for presentation as well as for 
+# data storage, it’s quite common to find cell entries in a spreadsheet 
+# that are not part of the data you want to read into R.
+# The readxl package has one such example spreadsheet where the 
+# actual dataframe is in the middle of the sheet but there is 
+# extraneous text in cells above and below the data.
+
+# You can use the readxl_example() function to locate the spreadsheet on 
+# your system in the directory where the package is installed. This fn 
+# returns the path to the spreadsheet, which you can use in 
+# read_excel() as usual.
+deaths_path <- readxl_example("deaths.xlsx")
+deaths_path
+deaths <- read_excel(deaths_path)
+deaths
+# The top three rows and the bottom four rows are not part of the dataframe. 
+# It’s possible to eliminate these extraneous rows using the skip and 
+# n_max arguments, but we recommend using cell ranges. 
+# In Excel, the top left cell is A1. As you move across columns to the 
+# right, the cell label moves down the alphabet, i.e. B1, C1, etc. 
+# And as you move down a column, the number in the cell label increases, 
+# i.e. A2, A3, etc.
+# Here the data we want to read in starts in cell A5 and ends in cell F15. 
+# In spreadsheet notation, this is A5:F15, which we supply to the range 
+# argument.
+deaths <- read_excel(deaths_path, range = "A5:F15")
+deaths
 
 
+# 20.2.6 Data types ====
+# In CSV files, all values are strings. This is not particularly true to 
+# the data, but it is simple: everything is a string.
+# The underlying data in Excel spreadsheets is more complex. A cell can be 
+# one of four things:
+# 1. A boolean, like TRUE, FALSE, or NA.
+# 2. A number, like “10” or “10.5”.
+# 3. A datetime, which can also include time like “11/1/21” or 
+#    “11/1/21 3:00 PM”.
+# 4. A text string, like “ten”.
+
+# NO CODE.
+
+
+# 20.2.7 Writing to Excel ====
 
 
 
