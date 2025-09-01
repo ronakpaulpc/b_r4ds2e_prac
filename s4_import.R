@@ -97,18 +97,17 @@ easypackages::libraries(
 # - by Karl Broman and Kara Woo.
 
 
-# 20.1 Prerequisites ------------------------------------------------------
-library(readxl)         # load data from excel spreadsheets
-library(tidyverse)
-library(writexl)        # create excel spreadsheets
-
-
 # 20.2 Excel --------------------------------------------------------------
 # Microsoft Excel is a widely used spreadsheet software program where data
 # are organized in worksheets inside of spreadsheet files. Here, we learn 
 # how to load data from Excel spreadsheets in R with the readxl package. 
 # This package is non-core tidyverse, so you need to load it explicitly.
 # We also use the writexl package to create Excel spreadsheets.
+
+# 20.2.1 Prerequisites ====
+library(tidyverse)
+library(readxl)         # load data from excel spreadsheets
+library(writexl)        # create excel spreadsheets
 
 
 # 20.2.2 Getting started ====
@@ -295,8 +294,53 @@ deaths
 
 
 # 20.2.7 Writing to Excel ====
+# Let’s create a small data frame that we can then write out. 
+# Note that item is a factor and quantity is an integer.
+bake_sale <- tibble(
+    item        = factor(c("brownie", "cupcake", "cookie")),
+    quantity    = c(10, 5, 8)
+)
+bake_sale
+# You can write data back to disk as an Excel file using the 
+# write_xlsx() function from the writexl package.
+write_xlsx(bake_sale, path = "data/bake-sale.xlsx")
+# Note that column names are included and bolded. These can be turned off 
+# by setting col_names and format_headers arguments to FALSE.
+
+# Just like reading from a CSV, information on data type is lost when we 
+# read the data back in. This makes Excel files unreliable for caching 
+# interim results as well.
+read_excel("data/bake-sale.xlsx")
 
 
+# 20.2.8 Formatted output ====
+# The writexl package is a light-weight solution for writing a simple 
+# Excel spreadsheet, but if you’re interested in additional features 
+# like writing to sheets within a spreadsheet and styling, you will 
+# want to use the openxlsx package.
+# Note that this package is not part of the tidyverse so the functions 
+# and workflows may feel unfamiliar. For example, function names are 
+# camelCase, multiple functions can’t be composed in pipelines, and 
+# arguments are in a different order than they tend to be in the tidyverse.
+
+# NO CODE.
+
+
+
+# 20.3 Google Sheets ------------------------------------------------------
+# Google Sheets is another widely used spreadsheet program. It’s free and 
+# web-based. Just like with Excel, in Google Sheets data are organized 
+# in worksheets (also called sheets) inside of spreadsheet files.
+
+# 20.3.1 Prerequisites ====
+# This section will also focus on spreadsheets, but this time you’ll be 
+# loading data from a Google Sheet with the googlesheets4 package. 
+# This package is non-core tidyverse as well, you need to load it explicitly.
+library(googelsheets4)
+library(tidyverse)
+
+
+# 20.3.2 Getting started ====
 
 
 
