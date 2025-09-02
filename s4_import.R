@@ -32,6 +32,7 @@ getwd()
 #         "ggrepel",
 #         "ggridges",
 #         "ggthemes",         # graph themes for ggplot2
+#         "googlesheets4",
 #         "hexbin",
 #         "janitor",          # cmds for data cleaning
 #         "Lahman",
@@ -65,6 +66,7 @@ easypackages::libraries(
     "ggrepel",
     "ggridges",                     # Ridgeline plots based on ggplot2
     "ggthemes",                     # Useful themes based on ggplot2
+    "googelsheets4",                # For handling Google Sheets
     "hexbin",
     "janitor",                      # Cmds for data cleaning
     "Lahman",
@@ -341,6 +343,70 @@ library(tidyverse)
 
 
 # 20.3.2 Getting started ====
+# The main function of the googlesheets4 package is read_sheet(), which 
+# reads a Google Sheet from a URL or a file id. This function also goes 
+# by the name range_read(). You can also create a brand new sheet with 
+# gs4_create() or write to an existing sheet with sheet_write() and friends.
+
+# NO CODE.
+
+
+# 20.3.3 Reading Google Sheets ====
+# Here we will read in the same sheet in excel section except its now a 
+# Google sheet. The first argument to read_sheet() is the URL of the file 
+# to read, and it returns a tibble. These URLs are not pleasant to work 
+# with, so you’ll often want to identify a sheet by its ID.
+# First, we suspend authorization
+gs4_deauth()
+# Now we read the sheet
+students_sheet_id <- "1V1nPp1tzOuutXFLb3G9Eyxi3qxeEhnOXUzL5_BcCQ0w"
+students_sheet_id
+students <- read_sheet(students_sheet_id)
+students
+# Just like we did with read_excel(), we can supply column names, 
+# NA strings, and column types to read_sheet().
+students <- read_sheet(
+    students_sheet_id,
+    col_names = c("student_id", "full_name", "favourite_food", 
+                  "meal_plan", "age"),
+    skip = 1,
+    na = c("", "N/A"),
+    col_types = "dcccc"
+)
+students
+# Note that we defined column types a bit differently here, using short 
+# codes. For example, “dcccc” stands for “double, character, character, 
+# character, character”.
+
+# It’s also possible to read individual sheets from Google Sheets as well. 
+# Let’s read the “Torgersen Island” sheet from the penguins Google Sheet.
+penguins_sheet_id <- "1aFu8lnD_g0yjF5O-K6SFgSEWiHPpgvFCF0NY9D6LXnY"
+penguins_sheet_id
+penguins <- read_sheet(
+    penguins_sheet_id,
+    sheet = "Torgersen Island"
+)
+penguins
+# You can obtain a list of all sheets within a Google Sheet 
+# with sheet_names().
+sheet_names(penguins_sheet_id)
+
+# Finally, just like with read_excel(), we can read in a portion of a 
+# Google Sheet by defining a range in read_sheet(). 
+# Note that we’re also using the gs4_example() function below to locate 
+# an example Google Sheet that comes with the googlesheets4 package.
+deaths_url <- gs4_example("deaths")
+deaths_url
+class(deaths_url)
+# Read the sheet
+deaths <- read_sheet(
+    deaths_url,
+    range = "A5:F15"
+)
+deaths
+
+
+# 20.3.4 Writing to Google Sheets ====
 
 
 
