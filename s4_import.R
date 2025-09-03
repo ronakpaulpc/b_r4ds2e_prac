@@ -66,7 +66,7 @@ easypackages::libraries(
     "ggrepel",
     "ggridges",                     # Ridgeline plots based on ggplot2
     "ggthemes",                     # Useful themes based on ggplot2
-    "googelsheets4",                # For handling Google Sheets
+    "googlesheets4",                # For handling Google Sheets
     "hexbin",
     "janitor",                      # Cmds for data cleaning
     "Lahman",
@@ -338,7 +338,7 @@ read_excel("data/bake-sale.xlsx")
 # This section will also focus on spreadsheets, but this time you’ll be 
 # loading data from a Google Sheet with the googlesheets4 package. 
 # This package is non-core tidyverse as well, you need to load it explicitly.
-library(googelsheets4)
+library(googlesheets4)
 library(tidyverse)
 
 
@@ -407,11 +407,64 @@ deaths
 
 
 # 20.3.4 Writing to Google Sheets ====
+# Let’s create a small data frame that we can then write out. 
+# Note that item is a factor and quantity is an integer.
+bake_sale <- tibble(
+    item        = factor(c("brownie", "cupcake", "cookie")),
+    quantity    = c(10, 5, 8)
+)
+bake_sale
+# You can write from R to Google Sheets with write_sheet(). The first 
+# argument is the data frame to write, and the second argument is the 
+# name (or other identifier) of the Google Sheet to write to.
+write_sheet(bake_sale, ss = "bake-sale")
+# If you’d like to write your data to a specific (work)sheet inside a 
+# Google Sheet, you can specify that with the sheet argument as well.
+write_sheet(bake_sale, ss = "bake-sale", sheet = "sales")
+# NOTE: Exporting Google Sheet asks for Google authorization.
 
 
+# 20.3.5 Authentication ====
+# While you can read from a public Google Sheet without authenticating 
+# with your Google account and with gs4_deauth(), reading a private sheet 
+# or writing to a sheet requires authentication so that googlesheets4 
+# can view and manage your Google Sheets.
+
+# When you attempt to read in a sheet that requires authentication 
+# googlesheets4 will direct you to a web browser with a prompt to 
+# sign in to your Google account and grant permission to operate 
+# on your behalf with Google Sheets.
+
+# However, if you want to specify a specific Google account, etc. you 
+# can do so with gs4_auth(), e.g., gs4_auth(email = "mine@example.com")
+# which will force the use of a token associated with a specific email.
+
+# NO CODE.
+
+
+# 20.4 Summary ------------------------------------------------------------
+# Microsoft Excel and Google Sheets are two of the most popular 
+# spreadsheet systems. Being able to interact with data stored in 
+# Excel and Google Sheets files directly from R is a superpower!
+
+# NO CODE.
+
+
+
+#_====
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# C21 - Databases ---------------------------------------------------------
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# A huge amount of data lives in databases, so it’s essential that you know 
+# how to access it.
 
 
 # TBC ####
+
+
+
+
+
 
 
 
@@ -422,6 +475,7 @@ deaths
 
 
 
+# TBC ####
 
 
 
