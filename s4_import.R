@@ -456,7 +456,29 @@ write_sheet(bake_sale, ss = "bake-sale", sheet = "sales")
 # C21 - Databases ---------------------------------------------------------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # A huge amount of data lives in databases, so it’s essential that you know 
-# how to access it.
+# how to access it. In this chapter, you’ll first learn the basics of the 
+# DBI package: how to use it to connect to a database and then retrieve 
+# data with a SQL1 query. SQL, short for structured query language, is the 
+# lingua franca of databases, and is an important language for all 
+# data scientists to learn. That said, we’re not going to start with SQL 
+# but instead we’ll teach you dbplyr, which can translate your dplyr code 
+# to the SQL.
+
+
+# 21.1 Prerequisites ------------------------------------------------------
+# In this chapter we will use DBI and dbplyr.
+# DBI is a low-level interface that connects to databases and executes SQL.
+# dbplyr is a high-level interface that translates your dplyr code to SQL 
+# queries then executes them with DBI.
+library(DBI)
+library(dbplyr)
+library(tidyverse)
+
+
+# 21.2 Database basics ----------------------------------------------------
+
+
+
 
 
 # TBC ####
