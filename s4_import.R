@@ -48,12 +48,10 @@ getwd()
 #     )
 # )
 
-# Extra packages in this book section
-# install.packages(
-#     c(
-#         "slider"            # for complex rolling aggregates
-#     )
-# )
+# # Extra packages in this book section
+# install.packages("slider")          # for complex rolling aggregates
+# install.packages("RMariaDB")        # MariaDB SQL server
+# install.packages("RPostgres")       # Postgre SQL server
 
 # Loading the required packages
 easypackages::libraries(
@@ -61,6 +59,8 @@ easypackages::libraries(
     "arrow",
     "babynames",
     "curl",
+    "DBI",
+    "dbplyr",
     "duckdb",
     "gapminder",
     "ggrepel",
@@ -458,7 +458,7 @@ write_sheet(bake_sale, ss = "bake-sale", sheet = "sales")
 # A huge amount of data lives in databases, so it’s essential that you know 
 # how to access it. In this chapter, you’ll first learn the basics of the 
 # DBI package: how to use it to connect to a database and then retrieve 
-# data with a SQL1 query. SQL, short for structured query language, is the 
+# data with a SQL query. SQL, short for structured query language, is the 
 # lingua franca of databases, and is an important language for all 
 # data scientists to learn. That said, we’re not going to start with SQL 
 # but instead we’ll teach you dbplyr, which can translate your dplyr code 
@@ -476,7 +476,67 @@ library(tidyverse)
 
 
 # 21.2 Database basics ----------------------------------------------------
+# At the simplest level, you can think about a database as a collection of 
+# dataframes, called tables in database terminology. Like a dataframe a 
+# database table is a collection of named columns, where every value 
+# in the column is the same type.
+# Databases are run by database management systems (DBMS) which come in 
+# three basic forms:
+# 1. Client-server DBMS run on a powerful central server, which you 
+#    connect to from your computer (the client). They are great for sharing 
+#    data with multiple people in an organization. Popular client-server 
+#    DBMS include PostgreSQL, MariaDB, SQL Server, and Oracle.
+# 2. Cloud DBMS, like Snowflake, Amazon’s RedShift, and Google’s BigQuery 
+#    are similar to client server DBMS’s, but they run in the cloud. This 
+#    means that they can easily handle extremely large datasets and can 
+#    automatically provide more compute resources as needed.
+# 3. In-process DBMS, like SQLite or duckdb, run entirely on your computer. 
+#    They’re great for working with large datasets where you’re the 
+#    primary user.
 
+# NO CODE.
+
+
+# 21.3 Connecting to a database -------------------------------------------
+# To connect to the database from R, you’ll use a pair of packages:
+# 1. You’ll always use DBI (database interface) because it provides a set 
+#    of generic functions that connect to the database, upload data, run 
+#    SQL queries, etc.
+# 2. You’ll also use a package tailored for the DBMS you’re connecting to. 
+#    This package translates the generic DBI commands into the specifics 
+#    needed for a given DBMS. There is usually one package for each DBMS 
+#    e.g., RPostgres for PostgreSQL and RMariaDB for MySQL.
+
+# If you can’t find a specific package for your DBMS, you can usually use 
+# the odbc package instead. This uses the ODBC protocol supported by many 
+# DBMS. odbc requires a little more setup because you’ll also need to 
+# install an ODBC driver and tell the odbc package where to find it.
+
+# Concretely, you create a database connection using DBI::dbConnect(). 
+# The first argument selects the DBMS, then the second and subsequent 
+# arguments describe how to connect to it (i.e. where it lives and the 
+# credentials that you need to access it).
+# Create a MariaDB connection
+con <- DBI::dbConnect(
+    RMariaDB::MariaDB(),
+    username = "foo"
+)
+# Error: Failed to connect: Can't connect to server on 'localhost' (10061)
+# Create a Postgre SQL connection
+con <- DBI::dbConnect(
+    RPostgres::Postgres(),
+    hostname = "databases.mycompany.com",
+    port = 1234
+)
+# Error: invalid connection option "hostname"
+
+# The precise details of the connection vary a lot from DBMS to DBMS so 
+# unfortunately we can’t cover all the details here. This means you’ll need
+# to do a little research on your own. Typically you can ask the other data 
+# scientists in your team or talk to your DBA (database administrator).
+
+
+# 21.3.1 In this book ====
 
 
 
