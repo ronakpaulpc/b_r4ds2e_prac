@@ -537,8 +537,46 @@ con <- DBI::dbConnect(
 
 
 # 21.3.1 In this book ====
+# Setting up a client-server or cloud DBMS would be a pain for this book 
+# so we’ll instead use an in-process DBMS that lives entirely in an 
+# R package: duckdb. Thanks to the magic of DBI, the only difference 
+# between using duckdb and any other DBMS is how you’ll connect to the 
+# database. This makes it great to teach with because you can easily run 
+# this code as well as easily take what you learn and apply it elsewhere.
+
+# Connecting to duckdb is particularly simple because the defaults create 
+# a temporary database that is deleted when you quit R. That’s great for 
+# learning because it guarantees that you’ll start from a clean slate 
+# every time you restart R.
+con <- DBI::dbConnect(duckdb::duckdb())
+con
+# duckdb is a high-performance database that’s designed very much for the 
+# needs of a data scientist. If you want to use duckdb for a real data 
+# analysis project, you’ll also need to supply the dbdir argument to make 
+# a persistent database and tell duckdb where to save it.
+con <- DBI::dbConnect(
+    duckdb::duckdb(), 
+    dbdir = "duckdb"
+)
 
 
+# 21.3.2 Load some data ====
+# Since this is a new database, we need to start by adding some data. 
+# Here we’ll add mpg and diamonds datasets from ggplot2 using 
+# DBI::dbWriteTable(). 
+# The simplest usage of dbWriteTable() needs three arguments: 
+# 1. a database connection, 
+# 2. the name of the table to create in the database, and 
+# 3. a dataframe of data.
+dbWriteTable(con, "mpg", ggplot2::mpg)
+dbWriteTable(con, "diamonds", ggplot2::diamonds)
+# If you’re using duckdb in a real project, we highly recommend learning 
+# about duckdb_read_csv() and duckdb_register_arrow(). These give you 
+# powerful and performant ways to quickly load data directly into duckdb 
+# without having to first load it into R.
+
+
+# 21.3.3 DBI basics ====
 
 
 # TBC ####
