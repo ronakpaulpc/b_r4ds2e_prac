@@ -521,14 +521,14 @@ con <- DBI::dbConnect(
     RMariaDB::MariaDB(),
     username = "foo"
 )
-# Error: Failed to connect: Can't connect to server on 'localhost' (10061)
+# ERROR: Failed to connect: Can't connect to server on 'localhost' (10061)
 # Create a Postgre SQL connection
 con <- DBI::dbConnect(
     RPostgres::Postgres(),
     hostname = "databases.mycompany.com",
     port = 1234
 )
-# Error: invalid connection option "hostname"
+# ERROR: invalid connection option "hostname"
 
 # The precise details of the connection vary a lot from DBMS to DBMS so 
 # unfortunately we can’t cover all the details here. This means you’ll need
@@ -554,10 +554,7 @@ con
 # needs of a data scientist. If you want to use duckdb for a real data 
 # analysis project, you’ll also need to supply the dbdir argument to make 
 # a persistent database and tell duckdb where to save it.
-con <- DBI::dbConnect(
-    duckdb::duckdb(), 
-    dbdir = "duckdb"
-)
+con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "duckdb")
 
 
 # 21.3.2 Load some data ====
@@ -577,6 +574,30 @@ dbWriteTable(con, "diamonds", ggplot2::diamonds)
 
 
 # 21.3.3 DBI basics ====
+# You can check that the data is loaded correctly by using a couple of 
+# other DBI functions.
+# dbListTables() lists all tables in the database.
+dbListTables(con)
+# dbReadTable() retrieves the contents of a table. dbReadTable() returns 
+# a data.frame so we use as_tibble() to convert it into a tibble so that 
+# it prints nicely.
+diamonds <- dbReadTable(con, "diamonds") |> 
+    as_tibble()
+class(diamonds)
+
+# If you already know SQL, you can use dbGetQuery() to get the results of 
+# running a query on the database.
+sql <- "
+SELECT carat, cut, clarity, color, price
+FROM diamonds
+WHERE price > 15000
+"
+dbGetQuery(con, sql) |> as_tibble()
+
+
+# 21.4 dbplyr basics ------------------------------------------------------
+
+
 
 
 # TBC ####
