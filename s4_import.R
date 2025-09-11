@@ -639,6 +639,24 @@ big_diamonds
 
 
 # 21.5 SQL ----------------------------------------------------------------
+# The rest of the chapter will teach you a little SQL through the lens of 
+# dbplyr. Luckily, if you understand dplyr you’re in a great place to 
+# quickly pick up SQL because so many of the concepts are the same.
+
+# We will explore the relationship between dplyr and SQL using a couple of 
+# old friends from the nycflights13 package: flights and planes. These 
+# datasets are easy to get into our learning database because dbplyr comes 
+# with a function that copies the tables from nycflights13 to our database.
+# First we set the connection.
+con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "duckdb")
+con
+# Now we import the tables to database
+dbplyr::copy_nycflights13(con)
+flights <- tbl(con, "flights")
+planes <- tbl(con, "planes")
+
+
+
 
 
 # TBC ####
