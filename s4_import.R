@@ -656,7 +656,37 @@ flights <- tbl(con, "flights")
 planes <- tbl(con, "planes")
 
 
+# 21.5.1 SQL basics ====
+# The top-level components of SQL are called statements. Common statements 
+# include CREATE for defining new tables, INSERT for adding data, and 
+# SELECT for retrieving data. 
+# We will focus on SELECT statements, also called queries, because they are 
+# almost exclusively what you’ll use as a data scientist.
+# A query is made up of clauses. There are five important clauses: 
+# SELECT, FROM, WHERE, ORDER BY, and GROUP BY.
+# This is what dbplyr generates for an unadulterated table:
+flights |> show_query()
+planes |> show_query()
+# WHERE and ORDER BY control which rows are included and how they are ordered:
+flights |> 
+    filter(dest == "IAH") |> 
+    arrange(dep_delay) |> 
+    show_query()
+# GROUP BY converts the query to a summary, causing aggregation to happen:
+flights |> 
+    group_by(dest) |> 
+    summarize(dep_delay = mean(dep_delay, na.rm = T)) |> 
+    show_query()
 
+# There are two important differences between dplyr verbs and SELECT clauses:
+# 1. In SQL, case doesn’t matter: you can write select, SELECT, or 
+#    even SeLeCt.
+# 2. In SQL, order matters: you must always write the clauses in the order 
+#    SELECT, FROM, WHERE, GROUP BY, ORDER BY.
+# Nest we explore each clause in more detail.
+
+
+# 21.5.2 SELECT ====
 
 
 # TBC ####
