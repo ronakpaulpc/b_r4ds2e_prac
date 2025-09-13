@@ -687,6 +687,47 @@ flights |>
 
 
 # 21.5.2 SELECT ====
+# The SELECT clause is the workhorse of queries and performs the same job 
+# as select(), mutate(), rename(), relocate() and  summarize(). select(), 
+# rename(), and relocate() have very direct translations to SELECT as they 
+# just affect where a column appears (if at all) along with its name.
+planes |> 
+    select(tailnum, type, manufacturer, model, year) |> 
+    show_query()
+planes |> 
+    select(tailnum, type, manufacturer, model, year) |> 
+    rename(year_built = year) |> 
+    show_query()
+planes |> 
+    select(tailnum, type, manufacturer, model, year) |> 
+    relocate(manufacturer, model, .before = type) |> 
+    show_query()
+# In SQL terminology renaming is called aliasing and is done with AS. 
+# Note that unlike mutate(), the old name is on the left and the new name 
+# is on the right.
+# NOTE: In the examples above note that "year" and "type" are wrapped in 
+# double quotes. That’s because these are reserved words in duckdb, so 
+# dbplyr quotes them to avoid any potential confusion between the 
+# column/table names and SQL operators.
+
+# The translations for mutate() are similarly straightforward: 
+# each variable becomes a new expression in SELECT.
+flights |> 
+    mutate(speed = distance / (air_time / 60)) |> 
+    show_query()
+
+
+# 21.5.3 FROM ====
+# The FROM clause defines the data source. It’s going to be rather 
+# uninteresting for a little while, because we’re just using single tables. 
+# You’ll see more complex examples once we hit the join functions.
+# NO CODE.
+
+
+# 21.5.4 GROUP BY ====
+
+
+
 
 
 # TBC ####
