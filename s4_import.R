@@ -654,6 +654,9 @@ con
 dbplyr::copy_nycflights13(con)
 flights <- tbl(con, "flights")
 planes <- tbl(con, "planes")
+# Next we create the diamonds database object
+diamonds_db <- tbl(con, "diamonds")
+diamonds_db
 
 
 # 21.5.1 SQL basics ====
@@ -725,12 +728,22 @@ flights |>
 
 
 # 21.5.4 GROUP BY ====
+# group_by() is translated to the GROUP BY clause and summarize() is 
+# translated to the SELECT clause.
+diamonds_db |> 
+    group_by(cut) |> 
+    summarize(
+        n = n(),
+        avg_price = mean(price, na.rm = T)
+    ) |> 
+    show_query()
+
+
+# 21.5.5 WHERE ====
 
 
 
-
-
-# TBC ####
+# TBD ####
 
 
 
