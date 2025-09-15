@@ -740,6 +740,52 @@ diamonds_db |>
 
 
 # 21.5.5 WHERE ====
+# filter() is translated to the WHERE clause.
+flights |> 
+    filter(dest == "IAH" | dest == "HOU") |> 
+    show_query()
+flights |> 
+    filter(arr_delay > 0 & arr_delay < 20) |> 
+    show_query()
+# There are a few important details to note here:
+# 1. | becomes OR and & becomes AND.
+# 2. SQL uses = for comparison, not ==. SQL doesn’t have assignment, so 
+#    there’s no potential for confusion there.
+# 3. SQL uses only '' for strings, not "". In SQL, "" is used to identify 
+#    variables, like R’s ``.
+
+# Another useful SQL operator is IN, which is very close to R’s %in%.
+flights |> 
+    filter(dest %in% c("IAH", "HOU")) |> 
+    show_query()
+
+# SQL uses NULL instead of NA. NULLs behave similarly to NAs. 
+# The main difference is that while they’re “infectious” in comparisons and 
+# arithmetic, they are silently dropped when summarizing. 
+# dbplyr will remind you about this behaviour the first time you hit it.
+flights |> 
+    group_by(dest) |> 
+    summarize(delay = mean(arr_delay))
+# In general, you can work with NULLs using the functions you’d use for 
+# NAs in R.
+flights |> 
+    filter(!is.na(dep_delay)) |> 
+    show_query()
+
+# Note that if you filter() a variable that you created using a summarize, 
+# dbplyr will generate a HAVING clause, rather than a WHERE clause.
+diamonds_db |> 
+    group_by(cut) |> 
+    summarize(n = n()) |> 
+    filter(n > 100) |> 
+    show_query()
+
+
+# 21.5.6 ORDER BY ====
+
+
+
+
 
 
 
