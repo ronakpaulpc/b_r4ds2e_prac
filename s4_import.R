@@ -782,8 +782,37 @@ diamonds_db |>
 
 
 # 21.5.6 ORDER BY ====
+# Ordering rows involves a straightforward translation from arrange() to the 
+# ORDER BY clause.
+flights |> 
+    arrange(year, month, day, desc(dep_delay)) |> 
+    show_query()
+# Notice how desc() is translated to DESC. This is one of the many dplyr 
+# functions whose name was directly inspired by SQL.
 
 
+# 21.5.7 Subqueries ====
+# A subquery is just a query used as a data source in the FROM clause 
+# instead of the usual table. dbplyr typically uses subqueries to work 
+# around limitations of SQL.
+flights |> 
+    mutate(
+        year1 = year + 1,
+        year2 = year1 + 1
+    ) |> 
+    show_query()
+
+# You’ll also see this if you attempted to filter() a variable that you 
+# just created. Remember, even though WHERE is written after SELECT, it’s 
+# evaluated before it, so we need a subquery in this (silly) example.
+flights |> 
+    mutate(year1 = year + 1) |> 
+    filter(year1 == 2014) |> 
+    show_query()
+# NOTE: Sometimes dbplyr will create a subquery where it’s not needed 
+# because it doesn’t yet know how to optimize that translation. 
+# As dbplyr improves over time, these cases will get rarer but will 
+# probably never go away.
 
 
 
