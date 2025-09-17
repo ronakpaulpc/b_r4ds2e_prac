@@ -815,6 +815,36 @@ flights |>
 # probably never go away.
 
 
+# 21.5.8 Joins ====
+# If you are familiar with dplyr’s joins, SQL joins are very similar.
+flights |> 
+    left_join(
+        planes |> rename(year_built = year),
+        join_by(tailnum)
+    ) |> 
+    show_query()
+# Note that SQL joins use sub-clauses of the FROM clause to bring in 
+# additional tables, using ON to define how the tables are related.
+
+# The join function names in dplyr are equivalent to SQL join names.
+# Inner Join
+flights |> 
+    inner_join(planes, join_by(tailnum))
+# Right Join
+flights |> 
+    right_join(planes, join_by(tailnum))
+# Full Join
+flights |> 
+    full_join(planes, join_by(tailnum))
+# You’re likely to need many joins when working with data from a database.
+
+
+# 21.5.9 Other verbs ====
+# NO CODE.
+
+
+# 21.6 Function translations ----------------------------------------------
+
 
 
 
