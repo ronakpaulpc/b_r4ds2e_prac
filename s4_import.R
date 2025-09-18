@@ -844,6 +844,61 @@ flights |>
 
 
 # 21.6 Function translations ----------------------------------------------
+# So far we’ve focused on the big picture of how dplyr verbs are translated 
+# to the clauses of a query. Now we’re going to zoom in a little and talk 
+# about the translation of the R functions that work with individual columns.
+# To help see what’s going on, we’ll use a couple of little helper functions 
+# that run a summarize() or mutate() and show the generated SQL.
+
+# To help see what’s going on, we’ll use a couple of little helper functions 
+# that run a summarize() or mutate() and show the generated SQL. That will 
+# make it a little easier to explore a few variations and see how summaries 
+# and transformations can differ.
+summarize_query <- function(df, ...) {
+    df |> 
+        summarize(...) |> 
+        show_query()
+}
+mutate_query <- function(df, ...) {
+    df |> 
+        mutate(..., .keep = "none") |> 
+        show_query()
+}
+
+# First we set the connection.
+con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "duckdb")
+con
+# Now we import the tables to database
+dbplyr::copy_nycflights13(con)
+flights <- tbl(con, "flights")
+planes <- tbl(con, "planes")
+# Let’s dive in with some summaries! Looking at the code below you’ll notice 
+# that some summary functions, like mean(), have a relatively simple 
+# translation while others, like median(), are much more complex.
+flights |> 
+    group_by(year, month, day) |> 
+    summarize_query(
+        mean = mean(arr_delay, na.rm = T),
+        median = median(arr_delay, na.rm = T)
+    )
+
+# The translation of summary functions becomes more complicated when you use 
+# them inside a mutate() because they have to turn into so-called window 
+# functions. In SQL, you turn an ordinary aggregation function into a window 
+# function by adding OVER after it.
+flights |> 
+    group_by(year, month, day) |> 
+    mutate_query(
+        mean = mean(arr_delay, na.rm = T)
+    )
+# In SQL, the GROUP BY clause is used exclusively for summaries so here you 
+# can see that the grouping has moved from the GROUP BY clause to OVER.
+
+
+
+
+
+
 
 
 
