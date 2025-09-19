@@ -891,13 +891,72 @@ flights |>
     mutate_query(
         mean = mean(arr_delay, na.rm = T)
     )
-# In SQL, the GROUP BY clause is used exclusively for summaries so here you 
+# In SQL, the GROUP BY clause is used exclusively for summaries. So here you 
 # can see that the grouping has moved from the GROUP BY clause to OVER.
 
+# Window functions include all functions that look forward or backwards 
+# like lead() and lag() which look at the “previous” or “next” value 
+# respectively.
+flights |> 
+    group_by(dest) |> 
+    arrange(time_hour) |> 
+    mutate_query(
+        lead = lead(arr_delay),
+        lag = lag(arr_delay)
+    )
+# Here it’s important to arrange() the data, because SQL tables have no 
+# intrinsic order. In fact, if you don’t use arrange() you might get the 
+# rows back in a different order every time! 
+# Notice for window functions, the ordering information is repeated: 
+# the ORDER BY clause of the main query doesn’t automatically apply to 
+# window functions.
+
+# Another important SQL function is CASE WHEN. It’s used as the translation 
+# of if_else() and case_when(), the dplyr function that it directly inspired. 
+# Here are a couple of simple examples:
+flights |> 
+    mutate_query(
+        description = case_when(
+            arr_delay < -5  ~ "early",
+            arr_delay < 5   ~ "on-time",
+            arr_delay >= 5  ~ "late"
+        )
+    )
+# CASE WHEN is also used for some other functions that don’t have a 
+# direct translation from R to SQL. A good example of this is cut():
+flights |> 
+    mutate_query(
+        description = cut(
+            arr_delay,
+            breaks = c(-Inf, -5, 5, Inf),
+            labels = c("early", "on-time", "late")
+        )
+    )
+# dbplyr also translates common string and date-time manipulation functions
+# which you can learn about in: 
+# vignette("translation-function", package = "dbplyr").
+# dbplyr’s translations are certainly not perfect, and there are many 
+# R functions that aren’t translated yet, but dbplyr does a surprisingly 
+# good job covering the functions that you’ll use most of the time.
+
+
+# 21.7 Summary ------------------------------------------------------------
+# In this chapter you learned how to access data from databases. We focused 
+# on dbplyr, a dplyr “backend” that allows you to write the dplyr code you’re 
+# familiar with, and have it be automatically translated to SQL. We also used 
+# that translation to teach you a little SQL. 
+# It’s important to learn some SQL because it’s the most commonly used 
+# language for working with data and knowing some will make it easier 
+# for you to communicate with other data folks who don’t use R.
+
+# NO CODE.
 
 
 
-
+#_====
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# C22 - Arrow -------------------------------------------------------------
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
@@ -919,7 +978,7 @@ flights |>
 
 
 
-# TBC ####
+# TBD ####
 
 
 
