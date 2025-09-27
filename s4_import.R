@@ -957,9 +957,55 @@ flights |>
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # C22 - Arrow -------------------------------------------------------------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# In this chapter, you’ll learn about a powerful alternative to csv files: 
+# the parquet format, an open standards-based format widely used by big data 
+# systems. We’ll pair parquet files with Apache Arrow, a multi-language 
+# toolbox designed for efficient analysis and transport of large datasets. 
+# We’ll use Apache Arrow via the arrow package, which provides a dplyr 
+# backend allowing you to analyze larger-than-memory datasets using 
+# familiar dplyr syntax. As an additional benefit, arrow is extremely 
+# fast: you’ll see some examples later in the chapter.
+
+# Both arrow and dbplyr provide dplyr backends, so you might wonder when 
+# to use each. In many cases, the choice is made for you, as the data is 
+# already in a database or in parquet files, and you’ll want to work with 
+# it as is.
 
 
+# 22.1 Prerequisites ------------------------------------------------------
+# This chapter will use the following packages
+library(tidyverse)
+library(arrow)
 
+# Later in the chapter, we’ll also see some connections between arrow and 
+# duckdb. So we’ll also need dbplyr and duckdb.
+library(dplyr, warn.conflicts = T)
+library(duckdb)
+
+
+# 22.2 Getting the data ---------------------------------------------------
+# We begin by getting a dataset worthy of these tools: a dataset of 
+# item checkouts from Seattle public libraries. This dataset contains 
+# 41,389,465 rows that tell you how many times each book was checked out 
+# each month from April 2005 to October 2022.
+
+# The following code will get you a cached copy of the data. The data is a 
+# 9GB CSV file, so it will take some time to download. 
+# I highly recommend using curl::multi_download() to get very large files 
+# as it’s built for exactly this purpose: it gives you a progress bar and 
+# it can resume the download if its interrupted.
+# Create directory for storing data.
+# WE DO NOT RUN THIS. DIRECTORY ALREADY CREATED.
+# dir.create("data", showWarnings = F)
+# Now we download the data
+curl::multi_download(
+    "https://r4ds.s3.us-west-2.amazonaws.com/seattle-library-checkouts.csv",
+    "data/seattle-library-checkouts.csv",
+    resume = T
+)
+
+
+# 22.3 Opening a dataset --------------------------------------------------
 
 
 # TBD ####
