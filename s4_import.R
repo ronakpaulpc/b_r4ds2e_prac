@@ -990,12 +990,12 @@ library(duckdb)
 # each month from April 2005 to October 2022.
 
 # The following code will get you a cached copy of the data. The data is a 
-# 9GB CSV file, so it will take some time to download. 
-# I highly recommend using curl::multi_download() to get very large files 
-# as it’s built for exactly this purpose: it gives you a progress bar and 
-# it can resume the download if its interrupted.
+# 9GB CSV file, so it will take some time to download. I highly recommend 
+# using curl::multi_download() to get very large files as it’s built for 
+# exactly this purpose: it gives you a progress bar and it can resume the 
+# download if its interrupted.
 # Create directory for storing data.
-# WE DO NOT RUN THIS. DIRECTORY ALREADY CREATED.
+# NOTE: WE DO NOT RUN THIS AS DIRECTORY ALREADY CREATED.
 # dir.create("data", showWarnings = F)
 # Now we download the data
 curl::multi_download(
@@ -1006,6 +1006,24 @@ curl::multi_download(
 
 
 # 22.3 Opening a dataset --------------------------------------------------
+# Let’s start by taking a look at the data. At 9 GB, this file is large 
+# enough that we probably don’t want to load the whole thing into memory. 
+# A good rule of thumb is that you usually want at least twice as much 
+# memory as the size of the data, and many laptops top out at 16 GB.
+seattle_csv <- open_dataset(
+    sources = "data/seattle-library-checkouts.csv",
+    col_types = schema(ISBN = string()),
+    format = "csv"
+)
+# What happens when this code is run? open_dataset() will scan a few 
+# thousand rows to figure out the structure of the dataset. The ISBN col
+# contains blank values for the first 80,000 rows, so we have to specify 
+# the column type to help arrow work out the data structure. Once the data 
+# has been scanned by open_dataset(), it records what it’s found and stops; 
+# it will only read further rows as you specifically request them.
+# This metadata is what we see if we print seattle_csv.
+seattle_csv
+
 
 
 # TBD ####
