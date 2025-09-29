@@ -1023,6 +1023,39 @@ seattle_csv <- open_dataset(
 # it will only read further rows as you specifically request them.
 # This metadata is what we see if we print seattle_csv.
 seattle_csv
+# The first line in the output tells you that seattle_csv is stored locally 
+# on-disk as a single CSV file; it will only be loaded into memory as needed. 
+# The remainder of the output tells you the column type that arrow has 
+# imputed for each column.
+
+# We can see what’s actually in with glimpse().
+seattle_csv |> glimpse()
+
+# We can start to use this dataset with dplyr verbs, using collect() to 
+# force arrow to perform the computation and return some data.
+seattle_csv |> 
+    group_by(CheckoutYear) |> 
+    summarize(Checkouts = sum(Checkouts)) |> 
+    arrange(CheckoutYear) |> 
+    collect()
+# Thanks to arrow, this code will work regardless of how large the underlying 
+# dataset is. But it’s currently rather slow: on Hadley’s computer, it took 
+# ~10s to run. That’s not terrible given how much data we have, but we can 
+# make it much faster by switching to a better format.
+
+
+# 22.4 The parquet format -------------------------------------------------
+# To make this data easier to work with, let’s switch to the parquet file 
+# format and split it up into multiple files. The following sections will 
+# first introduce you to parquet and partitioning, and then apply what we 
+# learned to the Seattle library data.
+
+
+# 22.4.1 Advantages of parquet ====
+
+
+
+
 
 
 
