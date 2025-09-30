@@ -1052,9 +1052,47 @@ seattle_csv |>
 
 
 # 22.4.1 Advantages of parquet ====
+# Parquet is used for rectangular data. It’s a custom binary format designed 
+# specifically for the needs of big data. This means that:
+# - Parquet files are usually smaller than the equivalent CSV file.
+# - Parquet files have a rich type system.
+# - Parquet files are “column-oriented”.
+# - Parquet files are “chunked”, which makes it possible to work on different 
+#   parts of the file at the same time, and, if you’re lucky, to skip some 
+#   chunks altogether.
+# There’s one primary disadvantage to parquet files: they are no longer 
+# “human readable”, i.e. if you look at a parquet file using 
+# readr::read_file(), you’ll just see a bunch of gibberish.
+# NO CODE.
 
 
+# 22.4.2 Partitioning ====
+# NO CODE.
 
+
+# 22.4.3 Rewriting the Seattle library data ====
+# Let’s apply these ideas to the Seattle library data to see how they 
+# play out in practice. We’re going to partition by CheckoutYear, since 
+# it’s likely some analyses will only want to look at recent data and 
+# partitioning by year yields 18 chunks of a reasonable size.
+
+# To rewrite the data we define the partition using dplyr::group_by() and 
+# then save the partitions to a directory with arrow::write_dataset(). 
+# write_dataset() has two important arguments: a directory where we’ll 
+# create the files and the format we’ll use.
+pq_path <- "data/seattle-library-checkouts"
+seattle_csv |> 
+    group_by(CheckoutYear) |> 
+    write_dataset(path = pq_path, format = "parquet")
+# This takes about a minute to run. Let’s take a look at what we just 
+# produced: 
+tibble(
+    files   = list.files(pq_path, recursive = TRUE),
+    size_mb = file.size(file.path(pq_path, files)) / 1024^2
+)
+
+
+# 22.5 Using dplyr with arrow ---------------------------------------------
 
 
 
