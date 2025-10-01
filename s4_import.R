@@ -1093,8 +1093,34 @@ tibble(
 
 
 # 22.5 Using dplyr with arrow ---------------------------------------------
+# Now we have created these parquet files, we’ll need to read them in again. 
+# We use open_dataset() again, but this time we give it a directory.
+pq_path <- "data/seattle-library-checkouts"
+seattle_pq <- open_dataset(pq_path)
+# Now we can write our dplyr pipeline. For example, we could count the total 
+# number of books checked out in each month for the last five years:
+query <- seattle_pq |> 
+    filter(CheckoutYear >= 2018, MaterialType == "BOOK") |> 
+    group_by(CheckoutYear, CheckoutMonth) |> 
+    summarize(Totalcheckouts = sum(Checkouts)) |> 
+    arrange(CheckoutYear, CheckoutMonth)
+# Writing dplyr code for arrow data is conceptually similar to dbplyr.
+# you write dplyr code, which is automatically transformed into a query that 
+# the Apache Arrow C++ library understands, which is then executed when you 
+# call collect(). If we print out the query object we can see a little 
+# information about what we expect Arrow to return when the execution 
+# takes place.
+query
+# And we can get the results by calling collect().
+query |> collect() |> print(n = 100)
+# Like dbplyr, arrow only understands some R expressions, so you may not be 
+# able to write exactly the same code you usually would. However, the list 
+# of operations and functions supported is fairly extensive and continues 
+# to grow.
+# We find a complete list of currently supported functions in ?acero.
 
 
+# 22.5.1 Performance ====
 
 
 # TBD ####
