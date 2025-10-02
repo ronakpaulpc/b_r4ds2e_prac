@@ -1105,7 +1105,7 @@ query <- seattle_pq |>
     summarize(Totalcheckouts = sum(Checkouts)) |> 
     arrange(CheckoutYear, CheckoutMonth)
 # Writing dplyr code for arrow data is conceptually similar to dbplyr.
-# you write dplyr code, which is automatically transformed into a query that 
+# You write dplyr code, which is automatically transformed into a query that 
 # the Apache Arrow C++ library understands, which is then executed when you 
 # call collect(). If we print out the query object we can see a little 
 # information about what we expect Arrow to return when the execution 
@@ -1121,7 +1121,7 @@ query |> collect() |> print(n = 100)
 
 
 # 22.5.1 Performance ====
-
+# Let's go!
 
 # TBD ####
 
