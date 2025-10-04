@@ -1112,7 +1112,8 @@ query <- seattle_pq |>
 # takes place.
 query
 # And we can get the results by calling collect().
-query |> collect() |> print(n = 100)
+query |> collect()
+query |> collect() |> print(n = 60)
 # Like dbplyr, arrow only understands some R expressions, so you may not be 
 # able to write exactly the same code you usually would. However, the list 
 # of operations and functions supported is fairly extensive and continues 
@@ -1121,7 +1122,39 @@ query |> collect() |> print(n = 100)
 
 
 # 22.5.1 Performance ====
-# Let's go!
+# Let’s take a quick look at the performance impact of switching from CSV 
+# to parquet. 
+# First, let’s time how long it takes to calculate the number of books 
+# checked out in each month of 2021, when the data is stored as a single 
+# large csv.
+seattle_csv |> 
+    filter(CheckoutYear == 2021, MaterialType == "BOOK") |> 
+    group_by(CheckoutMonth) |> 
+    summarize(totalcheckouts = sum(Checkouts)) |> 
+    arrange(desc(CheckoutMonth)) |> 
+    collect() |> 
+    system.time()
+#   user  system elapsed 
+#   14.12    3.45   13.33 
+# Now let’s use our new version of the dataset in which the Seattle library 
+# checkout data has been partitioned into 18 smaller parquet files.
+seattle_pq |> 
+    filter(CheckoutYear == 2021, MaterialType == "BOOK") |> 
+    group_by(CheckoutMonth) |> 
+    summarize(totalcheckouts = sum(Checkouts)) |> 
+    arrange(desc(CheckoutMonth)) |> 
+    collect() |> 
+    system.time()
+#   user  system elapsed 
+#   0.24    0.04    0.10 
+# The ~100x speedup in performance is attributable to two factors: 
+# the multi-file partitioning, and the format of individual files.
+# This massive difference in performance is why it pays off to convert 
+# large CSVs to parquet!
+
+
+# 22.5.2 Using duckdb with arrow ====
+
 
 # TBD ####
 
