@@ -1154,6 +1154,23 @@ seattle_pq |>
 
 
 # 22.5.2 Using duckdb with arrow ====
+# There’s one last advantage of parquet and arrow — it’s very easy to turn 
+# an arrow dataset into a DuckDB database by calling arrow::to_duckdb().
+seattle_pq |> 
+    to_duckdb() |> 
+    filter(CheckoutYear >= 2018, MaterialType == "BOOK") |> 
+    group_by(CheckoutYear) |> 
+    summarize(totalcheckouts = sum(Checkouts)) |> 
+    arrange(desc(CheckoutYear)) |> 
+    collect()
+# The neat thing about to_duckdb() is that the transfer doesn’t involve 
+# any memory copying, and speaks to the goals of the arrow ecosystem: 
+# enabling seamless transitions from one computing environment to another.
+
+
+# 22.6 Summary ------------------------------------------------------------
+# NO CODE.
+
 
 
 # TBD ####
