@@ -328,7 +328,6 @@ read_excel("data/bake-sale.xlsx")
 # NO CODE.
 
 
-
 # 20.3 Google Sheets ------------------------------------------------------
 # Google Sheets is another widely used spreadsheet program. It’s free and 
 # web-based. Just like with Excel, in Google Sheets data are organized 
@@ -1170,6 +1169,32 @@ seattle_pq |>
 
 # 22.6 Summary ------------------------------------------------------------
 # NO CODE.
+
+
+
+#_====
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# C23 - Hierarchical Data -------------------------------------------------
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# In this chapter, we will learn the art of data rectangling: taking data 
+# that is fundamentally hierarchical, or tree-like, and converting it into 
+# a rectangular dataframe made up of rows and columns. 
+# This is important because hierarchical data is surprisingly common
+# especially when working with data that comes from the web.
+
+
+# 23.1 Prerequisites ------------------------------------------------------
+# In this chapter, we’ll use many functions from tidyr, a core member of the 
+# tidyverse. We’ll also use repurrrsive to provide some interesting datasets 
+# for rectangling practice, and we’ll finish by using jsonlite to read 
+# JSON files into R lists.
+library(repurrrsive)
+library(jsonlite)
+library(tidyverse)
+
+
+# 23.2 Lists --------------------------------------------------------------
+
 
 
 
